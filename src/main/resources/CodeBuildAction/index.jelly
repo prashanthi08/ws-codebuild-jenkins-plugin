@@ -1,0 +1,171 @@
+<!--
+  ~  Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License.
+  ~  A copy of the License is located at
+  ~
+  ~      http://aws.amazon.com/apache2.0/
+  ~
+  ~  or in the "license" file accompanying this file.
+  ~  This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and limitations under the License.
+  ~
+  -->
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:f="/lib/form">
+    <l:layout>
+        <st:include it="${it.build}" page="sidepanel.jelly"/>
+        <l:main-panel>
+
+            <h1>CodeBuild Dashboard</h1>
+
+            <!--Build Status-->
+            <script type="text/javascript">
+
+                if("${it.jenkinsBuildSucceeds}" == "") {
+                    document.write('<h2>Current Build Status: <font color="blue">${it.buildStatus}</font></h2>');
+                } else {
+                    if("${it.buildStatus}" == "SUCCEEDED") {
+                        if("${it.jenkinsBuildSucceeds}" == "true") {
+                            document.write('<h2>Current Build Status: <font color="green">${it.buildStatus}</font></h2>');
+                        } else {
+                            document.write('<h2>Current Build Status: <font color="red">FAILED</font></h2>');
+                            document.write("The build succeeded in CodeBuild but failed in Jenkins. You can still find your artifacts at the link below. ")
+                            document.write('Consult the <a href="../console">console output.</a>');
+                            document.write('<br />');
+                        }
+                    } else if("${it.buildStatus}" == "FAILED") {
+                        document.write('<h2>Current Build Status: <font color="red">FAILED</font></h2>');
+                    } else if("${it.buildStatus}" == "STOPPED") {
+                        document.write('<h2>Current Build Status: <font color="red">STOPPED</font></h2>');
+                    } else {
+                        if("${it.jenkinsBuildSucceeds}" == "false") {
+                            document.write('<h2>Current Build Status: <font color="red">FAILED</font></h2>');
+                        }
+                    }
+                }
+            </script>
+
+            <script type="text/javascript">
+                document.write('<h3><a href="${it.codeBuildDashboardURL}" target="_blank">AWS CodeBuild Console</a></h3>');
+            </script>
+
+            <br />
+
+            <table class="pane bigtable stripped-odd">
+                <tbody>
+                    <tr align="left">
+                        <th>Build Metadata</th>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="pane bigtable stripped-odd">
+                <tbody>
+                    <tr>
+                        <td>Build ARN</td>
+                        <td> ${it.buildARN} </td>
+                    </tr>
+                    <tr>
+                        <td>Start Time</td>
+                        <td> ${it.startTime} </td>
+                    </tr>
+                    <tr>
+                        <td>Finish Time</td>
+                        <td> ${it.finishTime} </td>
+                    </tr>
+                    <tr>
+                        <td>Current Phase</td>
+                        <td> ${it.currentPhase} </td>
+                    </tr>
+                    <script type="text/javascript">
+                        document.write('<tr><td>Source Location</td><td> ${it.sourceLocation} </td></tr>');
+                        if("${it.sourceVersion}" != "") {
+                            document.write('<tr><td>Source Version</td><td> ${it.sourceVersion} </td></tr>');
+                        }
+                        if("${it.sourceType}" != "S3") {
+                            document.write('<tr><td>Git Clone Depth</td><td> ${it.gitCloneDepth} </td></tr>');
+                        }
+                        if("${it.sourceType}" == "GITHUB") {
+                            document.write('<tr><td>Report Build Status</td><td> ${it.reportBuildStatus} </td></tr>');
+                        }
+                    </script>
+                </tbody>
+            </table>
+
+            <h2>Phase History</h2>
+            <table class="pane bigtable stripped-odd" style="table-layout: fixed;">
+                <tbody>
+                    <tr align="left">
+                        <th>Build Phase</th>
+                        <th>Phase State</th>
+                        <th>Start Time</th>
+                        <th>Duration</th>
+                    </tr>
+                    <j:forEach var="phase" items="${it.phases}">
+                        <tr>
+                            <td>${phase.getPhaseType()}</td>
+                            <td>${phase.getPhaseStatus()}</td>
+                            <td>${phase.getStartTime()}</td>
+                            <td>${phase.getDurationInSeconds()} seconds</td>
+                        </tr>
+                    </j:forEach>
+                </tbody>
+            </table>
+
+            <script type="text/javascript">
+                if("${it.errorPhaseType}" != "") {
+                    document.write('<br/>');
+                    document.write('<table class="pane bigtable stripped-odd">');
+                    document.write('<tbody>');
+                    document.write('<tr style="border-top: 0px;"><td>' +
+                    'Error in phase ' + '${it.errorPhaseType}' + ': ' + '${it.phaseErrorMessage}' + '</td></tr>');
+                    document.write("</tbody></table>");
+                }
+            </script>
+
+            <!-- Display location of artifacts if build was successful -->
+            <script type="text/javascript">
+                if("${it.buildStatus}" == "SUCCEEDED") {
+                    if("${it.s3ArtifactURL}" != "") {
+                        if("${it.artifactTypeOverride}" != "NO_ARTIFACTS") {
+                            document.write('<h2>Build Artifacts</h2>');
+                            document.write('<table class="pane bigtable stripped-odd">');
+                            document.write('<tbody>');
+                            document.write('<tr align="left"><th>S3</th></tr>');
+                            document.write('<tr style="border-top: 0px;"><td>' +
+                                    '<a href="' + '${it.s3ArtifactURL}' + '">' + '${it.s3BucketName}' + '</a>' + '</td></tr>');
+                            document.write("</tbody></table>");
+                        }
+                    }
+                }
+            </script>
+
+            <!-- Display location of logs -->
+            <script type="text/javascript">
+                if("${it.s3LogsURL}" != "") {
+                    document.write('<h2><a href="${it.s3LogsURL}" target="_blank">S3 logs</a></h2>');
+                }
+                if("${it.cloudWatchLogsURL}" != "") {
+                    document.write('<h2><a href="${it.cloudWatchLogsURL}" target="_blank">CloudWatch Logs</a></h2>');
+                }
+
+                if("${it.s3LogsURL}" == "") {
+                  if("${it.cloudWatchLogsURL}" == "") {
+                    document.write('<br />');
+                  }
+                }
+            </script>
+            <table class="pane bigtable stripped-odd">
+                <tbody>
+                    <tr style="border-top: 0px;" align="left"><th>Container logs</th></tr>
+                    <tr><td><ol>
+                        <j:forEach var="log" items="${it.logs}">
+                            <li>${log} <br /> </li>
+                        </j:forEach>
+                    </ol></td></tr>
+                </tbody>
+            </table>
+
+        </l:main-panel>
+    </l:layout>
+</j:jelly>

@@ -1,0 +1,72 @@
+<!--
+  ~  Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License.
+  ~  A copy of the License is located at
+  ~
+  ~      http://aws.amazon.com/apache2.0/
+  ~
+  ~  or in the "license" file accompanying this file.
+  ~  This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and limitations under the License.
+  ~
+  -->
+
+<div>
+    Optional parameter. These environment variables will be passed to the StartBuild API and will override any project environment variables.
+
+    <br/>
+
+    Example:
+    <code>
+        [
+            {
+                VAR,
+                value
+            }
+        ]
+    </code>
+
+    <br/>
+
+    Example:
+    <code>
+        [
+            {
+                VAR,
+                value
+            },
+            {
+                VAR2,
+                value
+            }
+        ]
+    </code>
+
+    <br/>
+    <br/>
+
+    Commas in the name or value must be escaped. For freestyle projects, escape with one backslash:
+
+    <br/>
+
+    <code>
+        [
+        {
+        VAR,
+        value1\,value2
+        }
+        ]
+    </code>
+
+    <br/>
+
+    For pipeline projects, escape with two backslashes:
+
+    <br/>
+
+    <code>
+        awsCodeBuild ... envVariables: '[{VAR, value1\\,value2}]'
+    </code>
+
+</div>

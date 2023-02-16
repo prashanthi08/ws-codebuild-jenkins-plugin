@@ -1,0 +1,27 @@
+<?jelly escape-by-default='true'?>
+<!--
+  ~  Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License.
+  ~  A copy of the License is located at
+  ~
+  ~      http://aws.amazon.com/apache2.0/
+  ~
+  ~  or in the "license" file accompanying this file.
+  ~  This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and limitations under the License.
+  ~
+  -->
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <f:section title="${%AWS CodeBuild plugin}">
+    <f:entry title="Minimum polling interval (seconds)" field="minSleepTime" help="/plugin/aws-codebuild/help-minSleepTime.html">
+      <f:number clazz="positive-number" default="3"/>
+    </f:entry>
+    <f:entry title="Maximum polling interval (seconds)" field="maxSleepTime" help="/plugin/aws-codebuild/help-maxSleepTime.html">
+      <f:number default="60"/>
+    </f:entry>
+    <f:entry title="Maximum polling jitter (seconds)" field="sleepJitter" help="/plugin/aws-codebuild/help-sleepJitter.html">
+      <f:number clazz="positive-number" default="5"/>
+    </f:entry>
+  </f:section>
+</j:jelly>

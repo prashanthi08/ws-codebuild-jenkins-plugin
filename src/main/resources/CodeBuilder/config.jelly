@@ -1,0 +1,256 @@
+<?jelly escape-by-default='true'?>
+<!--
+  ~  Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License.
+  ~  A copy of the License is located at
+  ~
+  ~      http://aws.amazon.com/apache2.0/
+  ~
+  ~  or in the "license" file accompanying this file.
+  ~  This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and limitations under the License.
+  ~
+  -->
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:c="/lib/credentials" xmlns:html="jelly:html">
+
+  <f:section title="AWS Configuration" >
+
+    <f:radioBlock title="Select credentials from Jenkins" name="credentialsType" help="/plugin/aws-codebuild/help-JenkinsCreds.html"
+                  value="jenkins" checked="${instance.credentialsTypeEquals('jenkins')}" inline="true">
+
+      <f:entry title="Credentials" field="credentialsId">
+        <c:select/>
+      </f:entry>
+
+    </f:radioBlock>
+
+    <f:radioBlock title="Manually specify access and secret keys" name="credentialsType"
+                  value="keys" checked="${instance.credentialsTypeEquals('keys')}" inline="true">
+
+      <f:entry title="Proxy Host (optional)" field="proxyHost">
+        <f:textbox />
+      </f:entry>
+
+      <f:entry title="Proxy Port (optional)" field="proxyPort">
+        <f:textbox />
+      </f:entry>
+
+      <f:entry title="AWS Access Key" field="awsAccessKey" help="/plugin/aws-codebuild/help-keyCredsHelp.html">
+        <f:textbox />
+      </f:entry>
+
+      <f:entry title="AWS Secret Key" field="awsSecretKey" help="/plugin/aws-codebuild/help-keyCredsHelp.html">
+        <f:password />
+      </f:entry>
+
+    </f:radioBlock>
+
+  </f:section>
+
+  <f:section title="Project Configuration" >
+
+    <f:entry title="Region" field="region" help="/plugin/aws-codebuild/help-region.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Project Name" field="projectName" help="/plugin/aws-codebuild/help-projectNameHelp.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Source Type Override (optional)" field="sourceTypeOverride" help="/plugin/aws-codebuild/help-sourceTypeOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Source Location Override (optional)" field="sourceLocationOverride" help="/plugin/aws-codebuild/help-sourceLocationOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:radioBlock title="Use Project source" name="sourceControlType" help="/plugin/aws-codebuild/help-projectSourceHelp.html"
+                  value="project" checked="${instance.sourceControlTypeEquals('project')}" inline="true">
+
+        <f:entry title="Source Control Version (optional)" field="sourceVersion" help="/plugin/aws-codebuild/help-sourceVersionHelp.html">
+          <f:textbox />
+        </f:entry>
+
+        <f:entry title="Git Clone Depth Override (optional)" field="gitCloneDepthOverride" help="/plugin/aws-codebuild/help-gitCloneDepthHelp.html">
+          <f:select />
+        </f:entry>
+
+        <f:entry title="Report Build Status Override (optional)" field="reportBuildStatusOverride" help="/plugin/aws-codebuild/help-reportBuildStatusHelp.html">
+           <f:select />
+        </f:entry>
+    </f:radioBlock>
+
+    <f:radioBlock title="Use Jenkins source" name="sourceControlType" help="/plugin/aws-codebuild/help-jenkinsSourceHelp.html"
+                  value="jenkins" checked="${instance.sourceControlTypeEquals('jenkins')}" inline="true">
+
+        <f:entry title="Server-side encryption algorithm" field="sseAlgorithm" help="/plugin/aws-codebuild/help-sseAlgorithm.html">
+          <f:select />
+        </f:entry>
+
+        <f:entry title="Local Source Path (optional)" field="localSourcePath" help="/plugin/aws-codebuild/help-localSourcePathHelp.html">
+          <f:textbox />
+        </f:entry>
+
+        <f:entry title="Workspace Subdirectory (optional)" field="workspaceSubdir" help="/plugin/aws-codebuild/help-workspaceSubdir.html">
+          <f:textbox />
+        </f:entry>
+
+        <f:entry title="Inclusion pattern (optional)" field="workspaceIncludes" help="/plugin/aws-codebuild/help-workspaceIncludes.html">
+          <f:textbox />
+        </f:entry>
+
+        <f:entry title="Exclusion pattern (optional)" field="workspaceExcludes" help="/plugin/aws-codebuild/help-workspaceExcludes.html">
+          <f:textbox />
+        </f:entry>
+
+    </f:radioBlock>
+
+  </f:section>
+
+  <f:section title="Build Configuration" >
+
+    <f:entry title="Artifact Type Override" field="artifactTypeOverride" help="/plugin/aws-codebuild/help-artifactTypeOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Artifact Location Override" field="artifactLocationOverride" help="/plugin/aws-codebuild/help-artifactLocationOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Artifact Name Override" field="artifactNameOverride" help="/plugin/aws-codebuild/help-artifactNameOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Override Artifact Name" field="overrideArtifactName" help="/plugin/aws-codebuild/help-overrideArtifactName.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Artifact Namespace Override" field="artifactNamespaceOverride" help="/plugin/aws-codebuild/help-artifactNamespaceOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Artifact Packaging Override" field="artifactPackagingOverride" help="/plugin/aws-codebuild/help-artifactPackagingOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Artifact Path Override" field="artifactPathOverride" help="/plugin/aws-codebuild/help-artifactPathOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Artifact Encryption Disabled Override" field="artifactEncryptionDisabledOverride" help="/plugin/aws-codebuild/help-artifactEncryptionDisabledOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Secondary Artifacts Override" field="secondaryArtifactsOverride" help="/plugin/aws-codebuild/help-secondaryArtifactsOverride.html">
+      <f:textarea codemirror-mode="yaml" codemirror-config="mode: 'text/x-yaml'" />
+    </f:entry>
+
+    <f:entry title="Buildspec Override" field="buildSpecFile" help="/plugin/aws-codebuild/help-buildSpecFileHelp.html">
+      <f:textarea codemirror-mode="yaml" codemirror-config="mode: 'text/x-yaml'" />
+    </f:entry>
+
+    <f:entry title="Environment Type Override" field="environmentTypeOverride" help="/plugin/aws-codebuild/help-environmentTypeOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Image Override" field="imageOverride" help="/plugin/aws-codebuild/help-imageOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Privileged Mode Override" field="privilegedModeOverride" help="/plugin/aws-codebuild/help-privilegedModeOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Insecure SSL Override" field="insecureSslOverride" help="/plugin/aws-codebuild/help-insecureSslOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Secondary Sources Override" field="secondarySourcesOverride" help="/plugin/aws-codebuild/help-secondarySourcesOverride.html">
+      <f:textarea codemirror-mode="yaml" codemirror-config="mode: 'text/x-yaml'" />
+    </f:entry>
+
+    <f:entry title="Secondary Source Versions Override" field="secondarySourcesVersionOverride" help="/plugin/aws-codebuild/help-secondarySourcesVersionOverride.html">
+      <f:textarea codemirror-mode="yaml" codemirror-config="mode: 'text/x-yaml'" />
+    </f:entry>
+
+    <f:entry title="Compute Type Override" field="computeTypeOverride" help="/plugin/aws-codebuild/help-computeTypeOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Cache Type Override" field="cacheTypeOverride" help="/plugin/aws-codebuild/help-cacheTypeOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Cache Location Override" field="cacheLocationOverride" help="/plugin/aws-codebuild/help-cacheLocationOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Cache Modes Override" field="cacheModesOverride" help="/plugin/aws-codebuild/help-cacheModesOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="CloudWatch Logs Status Override" field="cloudWatchLogsStatusOverride" help="/plugin/aws-codebuild/help-cloudWatchLogsStatusOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="CloudWatch Logs Group Name Override" field="cloudWatchLogsGroupNameOverride" help="/plugin/aws-codebuild/help-cloudWatchLogsGroupNameOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="CloudWatch Logs Stream Name Override" field="cloudWatchLogsStreamNameOverride" help="/plugin/aws-codebuild/help-cloudWatchLogsStreamNameOverride.html">
+      <f:textbox />
+     </f:entry>
+
+    <f:entry title="S3 Logs Status Override" field="s3LogsStatusOverride" help="/plugin/aws-codebuild/help-s3LogsStatusOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="S3 Logs Encryption Disabled Override" field="s3LogsEncryptionDisabledOverride" help="/plugin/aws-codebuild/help-s3LogsEncryptionDisabledOverride.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="S3 Logs Location Override" field="s3LogsLocationOverride" help="/plugin/aws-codebuild/help-s3LogsLocationOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Certificate Override" field="certificateOverride" help="/plugin/aws-codebuild/help-certificateOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Service Role Override" field="serviceRoleOverride" help="/plugin/aws-codebuild/help-serviceRoleOverride.html">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="Environment Variables Override" field="envVariables" help="/plugin/aws-codebuild/help-envVariablesHelp.html">
+      <f:textarea />
+    </f:entry>
+
+    <f:entry title="Parameter Store Variables Override" field="envParameters" help="/plugin/aws-codebuild/help-envParametersHelp.html">
+      <f:textarea />
+    </f:entry>
+
+    <f:entry title="Timeout Override" field="buildTimeoutOverride" help="/plugin/aws-codebuild/help-buildTimeout.html">
+      <f:textbox />
+    </f:entry>
+
+  </f:section>
+
+  <f:section title="Miscellaneous Configuration" >
+    <f:entry title="Disable CloudWatch Streaming" field="cwlStreamingDisabled" help="/plugin/aws-codebuild/help-cwlStreamingDisabled.html">
+      <f:select />
+    </f:entry>
+
+    <f:entry title="Exception Failure Mode Status" field="exceptionFailureMode" help="/plugin/aws-codebuild/help-exceptionFailureMode.html">
+      <f:select />
+    </f:entry>
+
+    <f:optionalBlock title="Download Artifacts" name="downloadArtifacts" checked="${instance.downloadArtifactsEquals('true')}" inline="true" help="/plugin/aws-codebuild/help-downloadArtifacts.html">
+      <f:entry title="Relative Path" field="downloadArtifactsRelativePath" help="/plugin/aws-codebuild/help-downloadArtifactsRelativePath.html">
+        <f:textbox />
+      </f:entry>
+    </f:optionalBlock>
+  </f:section>
+
+</j:jelly>
